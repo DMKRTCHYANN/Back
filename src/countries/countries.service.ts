@@ -28,7 +28,6 @@ export class CountriesService {
   }
 
   async deleteCountry(id: number) {
-    console.log(id);
     const country = await this.countryRepository.findOne({ where: { id } });
     if (!country) {
       throw new NotFoundException(`Country with id ${id} not found`);

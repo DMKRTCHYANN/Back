@@ -23,6 +23,17 @@ let UsersService = class UsersService {
         this.userRepository = userRepository;
         this.countryRepository = countryRepository;
     }
+    async findAll(offset, limit) {
+        const [users, total] = await this.userRepository.findAndCount({
+            skip: offset,
+            take: limit,
+            relations: ['country'],
+        });
+        return {
+            data: users,
+            total,
+        };
+    }
     async getUsers() {
         return await this.userRepository.find({
             relations: ['country'],
@@ -61,6 +72,16 @@ let UsersService = class UsersService {
         });
         return await this.userRepository.save(newUser);
     }
+    async findUsers(filter) {
+        const { country, page, limit } = filter;
+        const query = this.userRepository.createQueryBuilder('user');
+        if (country) {
+            query.andWhere('user.country = :country', { country });
+        }
+        query.skip((page - 1) * limit).take(limit);
+        const [data, total] = await query.getManyAndCount();
+        return { data, total };
+    }
     async updateUser(id, updateUserDto) {
         await this.getUserInId(id);
         await this.userRepository.update(id, { ...updateUserDto });
@@ -68,6 +89,9 @@ let UsersService = class UsersService {
     }
     async deleteUser(id) {
         const user = await this.getUserInId(id);
+        if (!user) {
+            throw new common_1.NotFoundException(`User with id ${id} not found`);
+        }
         await this.userRepository.delete(id);
         return { message: `User with id ${id} deleted successfully` };
     }

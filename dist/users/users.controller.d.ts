@@ -4,7 +4,11 @@ import { UsersService } from './users.service';
 export declare class UsersController {
     private readonly userService;
     constructor(userService: UsersService);
-    getUsers(countryId?: number): Promise<import("../typeorm/entities/user.entity").UserEntitiy[]>;
+    getUsersByCountry(countryId: number): Promise<import("../typeorm/entities/user.entity").UserEntitiy[]>;
+    getUsers(country: string, page: number, limit: number): Promise<{
+        data: import("../typeorm/entities/user.entity").UserEntitiy[];
+        total: number;
+    }>;
     getUserById(id: number): Promise<import("../typeorm/entities/user.entity").UserEntitiy>;
     createUser(createUserDto: CreateUserDto): Promise<import("../typeorm/entities/user.entity").UserEntitiy>;
     updateUser(id: number, updateUserDto: UpdateUserDto): Promise<import("../typeorm/entities/user.entity").UserEntitiy>;

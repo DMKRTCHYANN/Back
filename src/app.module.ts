@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { UserEntitiy } from './typeorm/entities/user.entity';
 import { CountriesModule } from './countries/countries.module';
 import { Country } from './countries/entities/country.entity';
+import { PaginationModule } from './pagination/pagination.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { Country } from './countries/entities/country.entity';
     }),
     UsersModule,
     CountriesModule,
+    PaginationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

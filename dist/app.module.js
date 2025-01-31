@@ -15,6 +15,7 @@ const app_service_1 = require("./app.service");
 const user_entity_1 = require("./typeorm/entities/user.entity");
 const countries_module_1 = require("./countries/countries.module");
 const country_entity_1 = require("./countries/entities/country.entity");
+const pagination_module_1 = require("./pagination/pagination.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -33,6 +34,7 @@ exports.AppModule = AppModule = __decorate([
             }),
             users_module_1.UsersModule,
             countries_module_1.CountriesModule,
+            pagination_module_1.PaginationModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

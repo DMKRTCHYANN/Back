@@ -6,9 +6,9 @@ import { UserEntitiy } from 'src/typeorm/entities/user.entity';
 import { Country } from '../countries/entities/country.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntitiy, Country])], // Зарегистрированы репозитории
+  imports: [TypeOrmModule.forFeature([UserEntitiy, Country])],
   controllers: [UsersController],
   providers: [UsersService],
-  exports: [UsersService], // Экспортируем, если нужно использовать в других модулях
+  exports: [UsersService],
 })
 export class UsersModule {}

@@ -1,13 +1,12 @@
-// users.controller.ts
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Put,
+  Controller,
+  Delete,
+  Get,
   Param,
   ParseIntPipe,
-  Delete,
+  Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/createuser.dto';
@@ -18,33 +17,40 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
-  // Получить всех пользователей или отфильтровать по стране
-  @Get()
-  async getUsers(@Query('countryId') countryId?: number) {
-    console.log(countryId);
-
-
-
-
-    return countryId
-      ? await this.userService.getUsersByCountry(countryId)
-      : await this.userService.getUsers();
+  // Получение пользователей по стране (с использованием countryId)
+  @Get('country/:id')
+  async getUsersByCountry(@Param('id') countryId: number) {
+    return await this.userService.getUsersByCountry(countryId);
   }
 
+  // Получение пользователей с пагинацией, с возможностью фильтрации по стране
+  @Get()
+  async getUsers(
+    @Query('country') country: string,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+  ) {
+    // Если параметр country не передан, используем метод findAll
+    if (!country) {
+      return this.userService.findAll((page - 1) * limit, limit);
+    } else {
+      return this.userService.findUsers({ country, page, limit });
+    }
+  }
 
-  // Получить одного пользователя по ID
+  // Получение пользователя по id
   @Get(':id')
   async getUserById(@Param('id', ParseIntPipe) id: number) {
     return await this.userService.getUserInId(id);
   }
 
-  // Создать нового пользователя
+  // Создание нового пользователя
   @Post()
   async createUser(@Body() createUserDto: CreateUserDto) {
     return await this.userService.createUser(createUserDto);
   }
 
-  // Обновить пользователя
+  // Обновление пользователя по id
   @Put(':id')
   async updateUser(
     @Param('id', ParseIntPipe) id: number,
@@ -53,7 +59,7 @@ export class UsersController {
     return await this.userService.updateUser(id, updateUserDto);
   }
 
-  // Удалить пользователя
+  // Удаление пользователя по id
   @Delete(':id')
   async deleteUser(@Param('id', ParseIntPipe) id: number) {
     return await this.userService.deleteUser(id);

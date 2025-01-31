@@ -21,11 +21,16 @@ let UsersController = class UsersController {
     constructor(userService) {
         this.userService = userService;
     }
-    async getUsers(countryId) {
-        console.log(countryId);
-        return countryId
-            ? await this.userService.getUsersByCountry(countryId)
-            : await this.userService.getUsers();
+    async getUsersByCountry(countryId) {
+        return await this.userService.getUsersByCountry(countryId);
+    }
+    async getUsers(country, page, limit) {
+        if (!country) {
+            return this.userService.findAll((page - 1) * limit, limit);
+        }
+        else {
+            return this.userService.findUsers({ country, page, limit });
+        }
     }
     async getUserById(id) {
         return await this.userService.getUserInId(id);
@@ -42,10 +47,19 @@ let UsersController = class UsersController {
 };
 exports.UsersController = UsersController;
 __decorate([
-    (0, common_1.Get)(),
-    __param(0, (0, common_1.Query)('countryId')),
+    (0, common_1.Get)('country/:id'),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "getUsersByCountry", null);
+__decorate([
+    (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)('country')),
+    __param(1, (0, common_1.Query)('page')),
+    __param(2, (0, common_1.Query)('limit')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Number, Number]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getUsers", null);
 __decorate([

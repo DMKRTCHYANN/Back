@@ -38,7 +38,6 @@ let CountriesService = CountriesService_1 = class CountriesService {
         }
     }
     async deleteCountry(id) {
-        console.log(id);
         const country = await this.countryRepository.findOne({ where: { id } });
         if (!country) {
             throw new common_1.NotFoundException(`Country with id ${id} not found`);
