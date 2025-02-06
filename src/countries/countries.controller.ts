@@ -26,7 +26,6 @@ export class CountriesController {
         HttpStatus.BAD_REQUEST,
       );
     }
-
     try {
       return await this.countriesService.createCountry(name);
     } catch (error) {

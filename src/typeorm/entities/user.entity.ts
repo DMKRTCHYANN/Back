@@ -12,7 +12,7 @@ export class UserEntitiy {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id: number;
 
-  @Column({ unique: true })
+  @Column({ unique: false })
   username: string;
 
   @Column()
@@ -24,9 +24,6 @@ export class UserEntitiy {
   @Column({ nullable: true })
   authStrategy: string;
 
-  // @Column({ nullable: true, default: '' })
-  // country: string;
-
   @ManyToOne(() => Country, (country) => country.users, { nullable: true })
-  country: Country;
+  country: Country; // Связь с сущностью Country (страна пользователя)
 }

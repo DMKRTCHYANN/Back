@@ -3,8 +3,13 @@ import { UserEntitiy } from 'src/typeorm/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/createuser.dto';
 import { UpdateUserDto } from './dto/updateuser.dto';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Country } from '../countries/entities/country.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -27,6 +32,27 @@ export class UsersService {
     };
   }
 
+  async validateUser(username: string, password: string) {
+    const user = await this.userRepository.findOne({
+      where: { username },
+      relations: ['country'],
+    });
+
+    console.log(user);
+
+    if (!user) {
+      throw new UnauthorizedException('Invalid username or password');
+    }
+
+    // Проверка пароля
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Invalid username or password');
+    }
+
+    return { username: user.username};
+  }
+
   async getUsers() {
     return await this.userRepository.find({
       relations: ['country'],
@@ -37,6 +63,12 @@ export class UsersService {
     return await this.userRepository.find({
       where: { country: { id: countryId } },
       relations: ['country'],
+    });
+  }
+
+  async findByUsernameAndPassword(username: string, password: string) {
+    return this.userRepository.findOne({
+      where: { username, password },
     });
   }
 
@@ -89,7 +121,6 @@ export class UsersService {
     return await this.getUserInId(id);
   }
 
-  // Удаление пользователя
   async deleteUser(id: number) {
     const user = await this.getUserInId(id);
     if (!user) {

@@ -18,6 +18,7 @@ const user_entity_1 = require("../typeorm/entities/user.entity");
 const typeorm_2 = require("typeorm");
 const common_1 = require("@nestjs/common");
 const country_entity_1 = require("../countries/entities/country.entity");
+const bcrypt = require("bcrypt");
 let UsersService = class UsersService {
     constructor(userRepository, countryRepository) {
         this.userRepository = userRepository;
@@ -34,6 +35,21 @@ let UsersService = class UsersService {
             total,
         };
     }
+    async validateUser(username, password) {
+        const user = await this.userRepository.findOne({
+            where: { username },
+            relations: ['country'],
+        });
+        console.log(user);
+        if (!user) {
+            throw new common_1.UnauthorizedException('Invalid username or password');
+        }
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            throw new common_1.UnauthorizedException('Invalid username or password');
+        }
+        return { username: user.username };
+    }
     async getUsers() {
         return await this.userRepository.find({
             relations: ['country'],
@@ -43,6 +59,11 @@ let UsersService = class UsersService {
         return await this.userRepository.find({
             where: { country: { id: countryId } },
             relations: ['country'],
+        });
+    }
+    async findByUsernameAndPassword(username, password) {
+        return this.userRepository.findOne({
+            where: { username, password },
         });
     }
     async getUserInId(id) {

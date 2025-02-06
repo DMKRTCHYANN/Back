@@ -11,8 +11,12 @@ export declare class UsersService {
         data: UserEntitiy[];
         total: number;
     }>;
+    validateUser(username: string, password: string): Promise<{
+        username: string;
+    }>;
     getUsers(): Promise<UserEntitiy[]>;
     getUsersByCountry(countryId: number): Promise<UserEntitiy[]>;
+    findByUsernameAndPassword(username: string, password: string): Promise<UserEntitiy>;
     getUserInId(id: number): Promise<UserEntitiy>;
     createUser(createUserDto: CreateUserDto): Promise<UserEntitiy>;
     findUsers(filter: {

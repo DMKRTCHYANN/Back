@@ -1,6 +1,7 @@
 import { CreateUserDto } from './dto/createuser.dto';
 import { UpdateUserDto } from './dto/updateuser.dto';
 import { UsersService } from './users.service';
+import { LoginUserDto } from './dto/loginuser.dto';
 export declare class UsersController {
     private readonly userService;
     constructor(userService: UsersService);
@@ -11,6 +12,9 @@ export declare class UsersController {
     }>;
     getUserById(id: number): Promise<import("../typeorm/entities/user.entity").UserEntitiy>;
     createUser(createUserDto: CreateUserDto): Promise<import("../typeorm/entities/user.entity").UserEntitiy>;
+    login(loginUserDto: LoginUserDto): Promise<{
+        message: string;
+    }>;
     updateUser(id: number, updateUserDto: UpdateUserDto): Promise<import("../typeorm/entities/user.entity").UserEntitiy>;
     deleteUser(id: number): Promise<{
         message: string;

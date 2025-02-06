@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const createuser_dto_1 = require("./dto/createuser.dto");
 const updateuser_dto_1 = require("./dto/updateuser.dto");
 const users_service_1 = require("./users.service");
+const loginuser_dto_1 = require("./dto/loginuser.dto");
 let UsersController = class UsersController {
     constructor(userService) {
         this.userService = userService;
@@ -37,6 +38,16 @@ let UsersController = class UsersController {
     }
     async createUser(createUserDto) {
         return await this.userService.createUser(createUserDto);
+    }
+    async login(loginUserDto) {
+        console.log('Login request received:', loginUserDto);
+        const { username, password } = loginUserDto;
+        const user = await this.userService.validateUser(username, password);
+        if (!user) {
+            console.log('Invalid username or password');
+            throw new common_1.UnauthorizedException('Invalid username or password');
+        }
+        return { message: 'Login successful' };
     }
     async updateUser(id, updateUserDto) {
         return await this.userService.updateUser(id, updateUserDto);
@@ -76,6 +87,13 @@ __decorate([
     __metadata("design:paramtypes", [createuser_dto_1.CreateUserDto]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "createUser", null);
+__decorate([
+    (0, common_1.Post)('login'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [loginuser_dto_1.LoginUserDto]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "login", null);
 __decorate([
     (0, common_1.Put)(':id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),

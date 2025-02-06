@@ -32,13 +32,8 @@ export class CountriesService {
     if (!country) {
       throw new NotFoundException(`Country with id ${id} not found`);
     }
-
-    // Update users referencing this country (set the country relation to null)
     await this.userRepository.update({ country: country }, { country: null });
-
-    // Delete the country
     await this.countryRepository.delete(id);
-
     this.logger.log(`Country with id ${id} deleted successfully`);
     return { message: `Country with id ${id} deleted successfully` };
   }

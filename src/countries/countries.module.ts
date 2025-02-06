@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CountriesService } from './countries.service';
 import { CountriesController } from './countries.controller';
 import { Country } from './entities/country.entity';
-import { UserEntitiy } from '../typeorm/entities/user.entity'; // Импортируем сущность Country
+import { UserEntitiy } from '../typeorm/entities/user.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Country, UserEntitiy])],
