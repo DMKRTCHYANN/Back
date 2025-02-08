@@ -10,10 +10,12 @@ export declare class UsersController {
         data: import("../typeorm/entities/user.entity").UserEntitiy[];
         total: number;
     }>;
+    hashPasswords(): Promise<string>;
     getUserById(id: number): Promise<import("../typeorm/entities/user.entity").UserEntitiy>;
     createUser(createUserDto: CreateUserDto): Promise<import("../typeorm/entities/user.entity").UserEntitiy>;
     login(loginUserDto: LoginUserDto): Promise<{
-        message: string;
+        username: string;
+        country: string;
     }>;
     updateUser(id: number, updateUserDto: UpdateUserDto): Promise<import("../typeorm/entities/user.entity").UserEntitiy>;
     deleteUser(id: number): Promise<{

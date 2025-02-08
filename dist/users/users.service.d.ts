@@ -13,6 +13,7 @@ export declare class UsersService {
     }>;
     validateUser(username: string, password: string): Promise<{
         username: string;
+        country: string;
     }>;
     getUsers(): Promise<UserEntitiy[]>;
     getUsersByCountry(countryId: number): Promise<UserEntitiy[]>;
@@ -31,4 +32,7 @@ export declare class UsersService {
     deleteUser(id: number): Promise<{
         message: string;
     }>;
+    findOne(username: string, pass: string): Promise<UserEntitiy | undefined>;
+    findOneByUsername(username: string): Promise<UserEntitiy | undefined>;
+    hashExistingPasswords(): Promise<void>;
 }

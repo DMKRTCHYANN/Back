@@ -20,7 +20,7 @@ __decorate([
     __metadata("design:type", Number)
 ], UserEntitiy.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ unique: false }),
+    (0, typeorm_1.Column)({ unique: true }),
     __metadata("design:type", String)
 ], UserEntitiy.prototype, "username", void 0);
 __decorate([

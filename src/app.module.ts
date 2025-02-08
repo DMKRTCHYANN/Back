@@ -8,9 +8,14 @@ import { CountriesModule } from './countries/countries.module';
 import { Country } from './countries/entities/country.entity';
 import { PaginationModule } from './pagination/pagination.module';
 import { UsersController } from './users/users.controller';
+import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -24,6 +29,7 @@ import { UsersController } from './users/users.controller';
     UsersModule,
     CountriesModule,
     PaginationModule,
+    AuthModule,
   ],
   controllers: [AppController, UsersController],
   providers: [AppService],

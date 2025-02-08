@@ -33,6 +33,10 @@ let UsersController = class UsersController {
             return this.userService.findUsers({ country, page, limit });
         }
     }
+    async hashPasswords() {
+        await this.userService.hashExistingPasswords();
+        return 'Passwords have been hashed if necessary';
+    }
     async getUserById(id) {
         return await this.userService.getUserInId(id);
     }
@@ -40,14 +44,11 @@ let UsersController = class UsersController {
         return await this.userService.createUser(createUserDto);
     }
     async login(loginUserDto) {
-        console.log('Login request received:', loginUserDto);
-        const { username, password } = loginUserDto;
-        const user = await this.userService.validateUser(username, password);
-        if (!user) {
-            console.log('Invalid username or password');
-            throw new common_1.UnauthorizedException('Invalid username or password');
-        }
-        return { message: 'Login successful' };
+        console.log('Login request received:', {
+            username: loginUserDto.username,
+            password: loginUserDto.password,
+        });
+        return await this.userService.validateUser(loginUserDto.username, loginUserDto.password);
     }
     async updateUser(id, updateUserDto) {
         return await this.userService.updateUser(id, updateUserDto);
@@ -73,6 +74,12 @@ __decorate([
     __metadata("design:paramtypes", [String, Number, Number]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getUsers", null);
+__decorate([
+    (0, common_1.Get)('hash-passwords'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "hashPasswords", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),

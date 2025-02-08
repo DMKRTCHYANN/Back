@@ -17,12 +17,17 @@ const countries_module_1 = require("./countries/countries.module");
 const country_entity_1 = require("./countries/entities/country.entity");
 const pagination_module_1 = require("./pagination/pagination.module");
 const users_controller_1 = require("./users/users.controller");
+const auth_module_1 = require("./auth/auth.module");
+const config_1 = require("@nestjs/config");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            config_1.ConfigModule.forRoot({
+                isGlobal: true,
+            }),
             typeorm_1.TypeOrmModule.forRoot({
                 type: 'mysql',
                 host: 'localhost',
@@ -36,6 +41,7 @@ exports.AppModule = AppModule = __decorate([
             users_module_1.UsersModule,
             countries_module_1.CountriesModule,
             pagination_module_1.PaginationModule,
+            auth_module_1.AuthModule,
         ],
         controllers: [app_controller_1.AppController, users_controller_1.UsersController],
         providers: [app_service_1.AppService],

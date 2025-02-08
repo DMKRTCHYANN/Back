@@ -8,7 +8,6 @@ import {
   Post,
   Put,
   Query,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/createuser.dto';
 import { UpdateUserDto } from './dto/updateuser.dto';
@@ -37,6 +36,12 @@ export class UsersController {
     }
   }
 
+  @Get('hash-passwords')
+  async hashPasswords(): Promise<string> {
+    await this.userService.hashExistingPasswords();
+    return 'Passwords have been hashed if necessary';
+  }
+
   @Get(':id')
   async getUserById(@Param('id', ParseIntPipe) id: number) {
     return await this.userService.getUserInId(id);
@@ -49,22 +54,15 @@ export class UsersController {
 
   @Post('login')
   async login(@Body() loginUserDto: LoginUserDto) {
-    console.log('Login request received:', loginUserDto);
-    const { username, password } = loginUserDto;
-
-    // Проверяем пользователя через сервис
-    const user = await this.userService.validateUser(username, password);
-
-    // Если пользователь не найден или пароль неверный, выбрасываем исключение
-    if (!user) {
-      console.log('Invalid username or password');
-      throw new UnauthorizedException('Invalid username or password');
-    }
-
-    // Возвращаем успешный ответ с именем пользователя и страной
-    return { message: 'Login successful'};
+    console.log('Login request received:', {
+      username: loginUserDto.username,
+      password: loginUserDto.password,
+    });
+    return await this.userService.validateUser(
+      loginUserDto.username,
+      loginUserDto.password,
+    );
   }
-
 
   @Put(':id')
   async updateUser(

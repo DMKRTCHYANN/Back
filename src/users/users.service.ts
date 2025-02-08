@@ -37,20 +37,15 @@ export class UsersService {
       where: { username },
       relations: ['country'],
     });
-
     console.log(user);
-
     if (!user) {
       throw new UnauthorizedException('Invalid username or password');
     }
-
-    // Проверка пароля
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid username or password');
     }
-
-    return { username: user.username};
+    return { username: user.username, country: user.country.name };
   }
 
   async getUsers() {
@@ -67,9 +62,14 @@ export class UsersService {
   }
 
   async findByUsernameAndPassword(username: string, password: string) {
-    return this.userRepository.findOne({
-      where: { username, password },
+    const user = await this.userRepository.findOne({
+      where: { username },
+      relations: ['country'],
     });
+    if (user && (await bcrypt.compare(password, user.password))) {
+      return user;
+    }
+    return undefined;
   }
 
   async getUserInId(id: number) {
@@ -128,5 +128,50 @@ export class UsersService {
     }
     await this.userRepository.delete(id);
     return { message: `User with id ${id} deleted successfully` };
+  }
+
+  async findOne(
+    username: string,
+    pass: string,
+  ): Promise<UserEntitiy | undefined> {
+    console.log('Attempting login for username:', username);
+    console.log('Attempting login for password:', pass);
+
+    const users = await this.userRepository.find({
+      where: { username },
+    });
+
+    console.log('Found users:', users);
+
+    for (const user of users) {
+      console.log('Checking user:', user);
+      const isPasswordValid = await bcrypt.compare(pass, user.password);
+      console.log('Password valid:', isPasswordValid);
+
+      if (isPasswordValid) {
+        console.log('Valid user found:', user);
+        return user;
+      }
+    }
+
+    console.log('No valid user found');
+    return undefined;
+  }
+
+  async findOneByUsername(username: string): Promise<UserEntitiy | undefined> {
+    return this.userRepository.findOne({
+      where: { username },
+    });
+  }
+
+  async hashExistingPasswords() {
+    const users = await this.userRepository.find();
+    for (const user of users) {
+      if (!user.password.startsWith('$2b$')) {
+        console.log(`Hashing password for user: ${user.username}`);
+        user.password = await bcrypt.hash(user.password, 10);
+        await this.userRepository.save(user);
+      }
+    }
   }
 }
