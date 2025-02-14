@@ -9,12 +9,7 @@ async function bootstrap() {
     origin: '',
   });
   app.setGlobalPrefix('/api');
-
   await app.listen(8000);
 }
-// main.ts
-
-
-
 
 bootstrap();

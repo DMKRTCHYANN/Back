@@ -10,9 +10,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserEntitiy = void 0;
+const bcrypt = require("bcrypt");
 const typeorm_1 = require("typeorm");
 const country_entity_1 = require("../../countries/entities/country.entity");
 let UserEntitiy = class UserEntitiy {
+    async setPassword(password) {
+        const salt = await bcrypt.genSalt(10);
+        this.password = await bcrypt.hash(password, salt);
+    }
+    async checkPassword(password) {
+        return await bcrypt.compare(password, this.password);
+    }
 };
 exports.UserEntitiy = UserEntitiy;
 __decorate([

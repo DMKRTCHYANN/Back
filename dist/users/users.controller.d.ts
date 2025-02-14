@@ -14,6 +14,7 @@ export declare class UsersController {
     getUserById(id: number): Promise<import("../typeorm/entities/user.entity").UserEntitiy>;
     createUser(createUserDto: CreateUserDto): Promise<import("../typeorm/entities/user.entity").UserEntitiy>;
     login(loginUserDto: LoginUserDto): Promise<{
+        id: number;
         username: string;
         country: string;
     }>;

@@ -14,17 +14,22 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
-const auth_guard_1 = require("./auth.guard");
 const auth_service_1 = require("./auth.service");
+const auth_guard_1 = require("./auth.guard");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
     async signIn(signInDto) {
-        return await this.authService.signIn(signInDto.username, signInDto.password);
+        const accessToken = await this.authService.signIn(signInDto.username, signInDto.password);
+        return { access_token: accessToken };
     }
-    getProfile(req) {
-        return req.user;
+    getMe(req) {
+        return {
+            id: req.user.id,
+            username: req.user.username,
+            country: req.user.country,
+        };
     }
 };
 exports.AuthController = AuthController;
@@ -38,12 +43,12 @@ __decorate([
 ], AuthController.prototype, "signIn", null);
 __decorate([
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
-    (0, common_1.Get)('profile'),
+    (0, common_1.Get)('me'),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
-], AuthController.prototype, "getProfile", null);
+], AuthController.prototype, "getMe", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

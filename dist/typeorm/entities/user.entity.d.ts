@@ -6,4 +6,6 @@ export declare class UserEntitiy {
     createdAt: Date;
     authStrategy: string;
     country: Country;
+    setPassword(password: string): Promise<void>;
+    checkPassword(password: string): Promise<boolean>;
 }

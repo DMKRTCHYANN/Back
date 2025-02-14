@@ -19,24 +19,31 @@ let AuthService = class AuthService {
         this.usersService = usersService;
         this.jwtService = jwtService;
     }
-    async validateUser(username, pass) {
-        const user = await this.usersService.findOneByUsername(username);
-        if (user && (await bcrypt.compare(pass, user.password))) {
-            return user;
-        }
-        return null;
-    }
     async login(user) {
         const payload = { username: user.username, sub: user.id };
         return this.jwtService.sign(payload);
     }
-    async signIn(username, pass) {
-        const user = await this.validateUser(username, pass);
+    async validateUser(username, pass) {
+        const user = await this.usersService.findOneByUsername(username);
+        if (user) {
+            const isPasswordValid = await bcrypt.compare(pass, user.password);
+            if (isPasswordValid) {
+                return user;
+            }
+        }
+        return null;
+    }
+    async signIn(username, password) {
+        const user = await this.validateUser(username, password);
         if (!user) {
             throw new common_1.UnauthorizedException('Invalid username or password');
         }
-        const token = await this.login(user);
-        return { access_token: token };
+        const payload = {
+            id: user.id,
+            username: user.username,
+            country: user.country,
+        };
+        return this.jwtService.sign(payload);
     }
 };
 exports.AuthService = AuthService;
